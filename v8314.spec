@@ -5,7 +5,7 @@
 
 Name:		%scl_name
 Version:	1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
 
@@ -49,6 +49,8 @@ export LD_LIBRARY_PATH=%{_libdir}\${LD_LIBRARY_PATH:+:\${LD_LIBRARY_PATH}}
 export PYTHONPATH=%{_scl_root}%{python_sitelib}\${PYTHONPATH:+:\${PYTHONPATH}}
 export MANPATH=%{_mandir}:\$MANPATH
 export PKG_CONFIG_PATH=%{_libdir}/pkgconfig\${PKG_CONFIG_PATH:+:\${PKG_CONFIG_PATH}}
+export CPATH=%{_includedir}\${CPATH:+:\${CPATH}}
+export LIBRARY_PATH=%{_libdir}\${LIBRARY_PATH:+:\${LIBRARY_PATH}}
 EOF
 
 %scl_install
@@ -65,5 +67,8 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl}-config
 
 %changelog
+* Tue Nov 26 2013 Honza Horak <hhorak@redhat.com> - 1-2
+- Provide CPATH and LIBRARY_PATH in the enable scriptlet
+
 * Tue Oct 29 2013 thrcka@redhat.com - 1-1
 - Initial version of the V8 Software Collection
