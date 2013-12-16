@@ -1,11 +1,11 @@
 %{!?scl:%global scl v8314}
 %scl_package %scl
 
-%global install_scl 0
+%global install_scl 1
 
 Name:		%scl_name
 Version:	1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
 
@@ -13,6 +13,7 @@ License:	MIT
 Requires: %{scl_prefix}gyp
 Requires: %{scl_prefix}v8
 Requires: %{scl_prefix}v8-devel
+Requires: %{scl_prefix}runtime
 %endif
 
 BuildRequires:	scl-utils-build
@@ -67,6 +68,9 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl}-config
 
 %changelog
+* Mon Dec 16 2013 Tomas Hrcka <thrcka@redhat.com> - 1-3
+- Install collection packages as dependency
+
 * Tue Nov 26 2013 Honza Horak <hhorak@redhat.com> - 1-2
 - Provide CPATH and LIBRARY_PATH in the enable scriptlet
 
