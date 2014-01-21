@@ -1,11 +1,11 @@
 %{!?scl:%global scl v8314}
 %scl_package %scl
 
-%global install_scl 1
+%global install_scl 0
 
 Name:		%scl_name
 Version:	1
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
 
@@ -68,6 +68,9 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl}-config
 
 %changelog
+* Tue Jan 21 2014 Tomas Hrcka <thrcka@redhat.com> - 1-4
+- Rebuild rhbz#1054255 
+
 * Mon Dec 16 2013 Tomas Hrcka <thrcka@redhat.com> - 1-3
 - Install collection packages as dependency
 
