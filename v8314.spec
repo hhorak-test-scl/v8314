@@ -5,7 +5,7 @@
 
 Name:		%scl_name
 Version:	1
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
 
@@ -36,13 +36,20 @@ Requires: scl-utils-build
 %description build
 Package shipping essential configuration macros to build %scl Software Collection.
 
+%package scldevel
+Summary: Package shipping development files for %scl
+
+%description scldevel
+Package shipping development files, especially usefull for development of
+packages depending on %scl Software Collection.
+
 %prep
 %setup -T -c
 
 %install
-
-
 rm -rf %{buildroot}
+%scl_install
+
 mkdir -p %{buildroot}%{_scl_scripts}/root
 cat >> %{buildroot}%{_scl_scripts}/enable << EOF
 export PATH=%{_bindir}\${PATH:+:\${PATH}} 
@@ -54,7 +61,12 @@ export CPATH=%{_includedir}\${CPATH:+:\${CPATH}}
 export LIBRARY_PATH=%{_libdir}\${LIBRARY_PATH:+:\${LIBRARY_PATH}}
 EOF
 
-%scl_install
+cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << EOF
+%%scl_%{scl_name_base} %{scl}
+%%scl_prefix_%{scl_name_base} %{scl_prefix}
+EOF
+
+
 # scl doesn't include this directory
 #mkdir -p %{buildroot}%{_scl_root}%{python_sitelib}
 #mkdir -p %{buildroot}%{_libdir}/pkgconfig
@@ -67,7 +79,13 @@ EOF
 %files build
 %{_root_sysconfdir}/rpm/macros.%{scl}-config
 
+%files scldevel
+%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
+
 %changelog
+* Mon Jan 27 2014 Tomas Hrcka <thrcka@redhat.com> - 1-4
+- Add -scldevel sub-package.
+
 * Mon Dec 16 2013 Tomas Hrcka <thrcka@redhat.com> - 1-3
 - Install collection packages as dependency
 
