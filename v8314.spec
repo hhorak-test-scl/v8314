@@ -3,11 +3,16 @@
 
 %global install_scl 1
 
+# do not produce empty debuginfo package
+%global debug_package %{nil}
+
 Name:		%scl_name
-Version:	1
+Version:	1.1
 Release:	4%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
+Source0: 	LICENSE
+Source1:	README
 
 %if %{?install_scl} > 0
 Requires: %{scl_prefix}gyp
@@ -18,6 +23,7 @@ Requires: %{scl_prefix}runtime
 
 BuildRequires:	scl-utils-build
 BuildRequires:  python-devel
+BuildRequires:  help2man
 
 %description
 This is the main package for %scl Software Collection.
@@ -45,6 +51,26 @@ packages depending on %scl Software Collection.
 
 %prep
 %setup -T -c
+# This section generates README file from a template and creates man page
+# from that file, expanding RPM macros in the template file.
+cat >README <<'EOF'
+%{expand:%(cat %{SOURCE1})}
+EOF
+
+# copy the license file so %%files section sees it
+cp %{SOURCE0} .
+
+%build
+# generate a helper script that will be used by help2man
+cat >h2m_helper <<'EOF'
+#!/bin/bash
+[ "$1" == "--version" ] && echo " %{scl_name} %{version} Software Collection" || cat README
+EOF
+
+chmod a+x h2m_helper
+
+# generate the man page
+help2man -N --section 7 ./h2m_helper -o %{scl_name}.7
 
 %install
 rm -rf %{buildroot}
@@ -71,10 +97,16 @@ EOF
 #mkdir -p %{buildroot}%{_scl_root}%{python_sitelib}
 #mkdir -p %{buildroot}%{_libdir}/pkgconfig
 
+# install generated man page
+mkdir -p %{buildroot}%{_mandir}/man7/
+install -m 644 %{scl_name}.7 %{buildroot}%{_mandir}/man7/%{scl_name}.7
+
 %files
 
 %files runtime
 %scl_files
+%doc README LICENSE
+%{_mandir}/man7/%{scl_name}.*
  
 %files build
 %{_root_sysconfdir}/rpm/macros.%{scl}-config
@@ -83,6 +115,11 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
+* Wed Feb 12 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-4
+- Add README and LICENSE files
+- Add man page
+- Bump version to 1.1 
+
 * Mon Jan 27 2014 Tomas Hrcka <thrcka@redhat.com> - 1-4
 - Add -scldevel sub-package.
 
