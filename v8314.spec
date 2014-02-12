@@ -8,7 +8,7 @@
 
 Name:		%scl_name
 Version:	1.1
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
 Source0: 	LICENSE
@@ -115,6 +115,10 @@ install -m 644 %{scl_name}.7 %{buildroot}%{_mandir}/man7/%{scl_name}.7
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
+* Wed Feb 12 2014 Honza Horak <hhorak@redhat.com> - 1.1-5
+- Some more grammar fixes in README
+  Related: #1061462
+
 * Wed Feb 12 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-4
 - Add README and LICENSE files
 - Add man page
