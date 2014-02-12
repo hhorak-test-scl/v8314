@@ -1,4 +1,7 @@
-%{!?scl:%global scl v8314}
+%global scl_name_base v8
+%global scl_name_version 314
+ 
+%global scl %{scl_name_base}%{scl_name_version}
 %scl_package %scl
 
 %global install_scl 1
@@ -8,7 +11,7 @@
 
 Name:		%scl_name
 Version:	1.1
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
 Source0: 	LICENSE
@@ -115,6 +118,9 @@ install -m 644 %{scl_name}.7 %{buildroot}%{_mandir}/man7/%{scl_name}.7
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
+* Wed Feb 12 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-6
+- Define scl_name_base and scl_name_version macros
+
 * Wed Feb 12 2014 Honza Horak <hhorak@redhat.com> - 1.1-5
 - Some more grammar fixes in README
   Related: #1061462
