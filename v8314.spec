@@ -1,16 +1,21 @@
 %global scl_name_base v8
 %global scl_name_version 314
-
+ 
 %global scl %{scl_name_base}%{scl_name_version}
 %scl_package %scl
 
 %global install_scl 1
 
+# do not produce empty debuginfo package
+%global debug_package %{nil}
+
 Name:		%scl_name
-Version:	1
-Release:	6%{?dist}
+Version:	1.1
+Release:	7%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
+Source0: 	LICENSE
+Source1:	README
 
 %if %{?install_scl} > 0
 Requires: %{scl_prefix}gyp
@@ -21,6 +26,7 @@ Requires: %{scl_prefix}runtime
 
 BuildRequires:	scl-utils-build
 BuildRequires:  python-devel
+BuildRequires:  help2man
 
 %description
 This is the main package for %scl Software Collection.
@@ -41,6 +47,7 @@ Package shipping essential configuration macros to build %scl Software Collectio
 
 %package scldevel
 Summary: Package shipping development files for %scl
+Provides: scldevel(%{scl_name_base})
 
 %description scldevel
 Package shipping development files, especially usefull for development of
@@ -48,11 +55,31 @@ packages depending on %scl Software Collection.
 
 %prep
 %setup -T -c
+# This section generates README file from a template and creates man page
+# from that file, expanding RPM macros in the template file.
+cat >README <<'EOF'
+%{expand:%(cat %{SOURCE1})}
+EOF
+
+
+%build
+# generate a helper script that will be used by help2man
+cat >h2m_helper <<'EOF'
+#!/bin/bash
+[ "$1" == "--version" ] && echo " %{scl_name} %{version} Software Collection" || cat README
+EOF
+
+chmod a+x h2m_helper
+
+# generate the man page
+help2man -N --section 7 ./h2m_helper -o %{scl_name}.7
 
 %install
 rm -rf %{buildroot}
-
 %scl_install
+
+# copy the license file so %%files section sees it
+cp %{SOURCE0} .
 
 mkdir -p %{buildroot}%{_scl_scripts}/root
 cat >> %{buildroot}%{_scl_scripts}/enable << EOF
@@ -65,6 +92,12 @@ export CPATH=%{_includedir}\${CPATH:+:\${CPATH}}
 export LIBRARY_PATH=%{_libdir}\${LIBRARY_PATH:+:\${LIBRARY_PATH}}
 EOF
 
+cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << EOF
+%%scl_%{scl_name_base} %{scl}
+%%scl_prefix_%{scl_name_base} %{scl_prefix}
+EOF
+
+
 # scl doesn't include this directory
 #mkdir -p %{buildroot}%{_scl_root}%{python_sitelib}
 #mkdir -p %{buildroot}%{_libdir}/pkgconfig
@@ -74,10 +107,16 @@ cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << E
 %%scl_prefix_%{scl_name_base} %{scl_prefix}
 EOF
 
+# install generated man page
+mkdir -p %{buildroot}%{_mandir}/man7/
+install -m 644 %{scl_name}.7 %{buildroot}%{_mandir}/man7/%{scl_name}.7
+
 %files
 
 %files runtime
 %scl_files
+%doc README LICENSE
+%{_mandir}/man7/%{scl_name}.*
  
 %files build
 %{_root_sysconfdir}/rpm/macros.%{scl}-config
@@ -86,14 +125,29 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
-* Thu Jan 23 2014 Tomas Hrcka <thrcka@redhat.com> - 1-6
+* Thu Feb 13 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-7
+- Added Provides: scldevel(%{scl_name_base}) to scldevel subpackage
+
+* Wed Feb 12 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-6
+- Define scl_name_base and scl_name_version macros
+
+* Wed Feb 12 2014 Honza Horak <hhorak@redhat.com> - 1.1-5
+- Some more grammar fixes in README
+  Related: #1061462
+
+* Wed Feb 12 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-4
+- Add README and LICENSE files
+- Add man page
+- Bump version to 1.1 
+
+* Mon Jan 27 2014 Tomas Hrcka <thrcka@redhat.com> - 1-4
 - Add -scldevel sub-package.
-  
+
 * Thu Jan 23 2014 Tomas Hrcka <thrcka@redhat.com> - 1-5
 - Install collection packages as dependency(again)
 
 * Tue Jan 21 2014 Tomas Hrcka <thrcka@redhat.com> - 1-4
-- Rebuild rhbz#1054255 
+- Rebuild rhbz#1054255
 
 * Mon Dec 16 2013 Tomas Hrcka <thrcka@redhat.com> - 1-3
 - Install collection packages as dependency
