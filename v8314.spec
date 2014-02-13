@@ -11,7 +11,7 @@
 
 Name:		%scl_name
 Version:	1.1
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
 Source0: 	LICENSE
@@ -47,6 +47,7 @@ Package shipping essential configuration macros to build %scl Software Collectio
 
 %package scldevel
 Summary: Package shipping development files for %scl
+Provides: scldevel(%{scl_name_base})
 
 %description scldevel
 Package shipping development files, especially usefull for development of
@@ -118,6 +119,9 @@ install -m 644 %{scl_name}.7 %{buildroot}%{_mandir}/man7/%{scl_name}.7
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
+* Thu Feb 13 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-7
+- Added Provides: scldevel(%{scl_name_base}) to scldevel subpackage
+
 * Wed Feb 12 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-6
 - Define scl_name_base and scl_name_version macros
 
