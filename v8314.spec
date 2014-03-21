@@ -11,7 +11,7 @@
 
 Name:		%scl_name
 Version:	1.1
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
 Source0: 	LICENSE
@@ -99,8 +99,8 @@ EOF
 
 
 # scl doesn't include this directory
-#mkdir -p %{buildroot}%{_scl_root}%{python_sitelib}
-#mkdir -p %{buildroot}%{_libdir}/pkgconfig
+mkdir -p %{buildroot}%{_scl_root}%{python_sitelib}
+mkdir -p %{buildroot}%{_libdir}/pkgconfig
 
 cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << EOF
 %%scl_%{scl_name_base} %{scl}
@@ -113,7 +113,7 @@ install -m 644 %{scl_name}.7 %{buildroot}%{_mandir}/man7/%{scl_name}.7
 
 %files
 
-%files runtime
+%files -f filesystem runtime
 %scl_files
 %doc README LICENSE
 %{_mandir}/man7/%{scl_name}.*
@@ -125,6 +125,10 @@ install -m 644 %{scl_name}.7 %{buildroot}%{_mandir}/man7/%{scl_name}.7
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
+* Fri Mar 21 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-8
+- Add python_sitelib to the package
+- Enable %files -f filesystem to fix manpages ownership
+
 * Thu Feb 13 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-7
 - Added Provides: scldevel(%{scl_name_base}) to scldevel subpackage
 
