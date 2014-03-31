@@ -11,7 +11,7 @@ Usage: scl enable %{scl} 'd8'
 
 Software Collections allow you to build and execute applications
 which are not located in the filesystem root hierarchy,
-but are stored in an alternative location, which is %{scl_prefix}
+but are stored in an alternative location, which is %{_scl_root}
 in case of the %{scl_name} collection.
 
 V8 is Google's open source JavaScript engine. V8 is written in C++ and is used

@@ -11,7 +11,7 @@
 
 Name:		%scl_name
 Version:	1.1
-Release:	8%{?dist}
+Release:	9%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
 Source0: 	LICENSE
@@ -125,6 +125,10 @@ install -m 644 %{scl_name}.7 %{buildroot}%{_mandir}/man7/%{scl_name}.7
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
+* Mon Mar 31 2014 Honza Horak <hhorak@redhat.com> - 1.1-9
+- Fix path typo in README
+  Related: #1061462
+
 * Fri Mar 21 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-8
 - Add python_sitelib to the package
 - Enable %files -f filesystem to fix manpages ownership
