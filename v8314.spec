@@ -11,7 +11,7 @@
 
 Name:		%scl_name
 Version:	1.1
-Release:	9%{?dist}
+Release:	10%{?dist}
 Summary:	%scl Software Collection
 License:	MIT
 Source0: 	LICENSE
@@ -66,7 +66,7 @@ EOF
 # generate a helper script that will be used by help2man
 cat >h2m_helper <<'EOF'
 #!/bin/bash
-[ "$1" == "--version" ] && echo " %{scl_name} %{version} Software Collection" || cat README
+[ "$1" == "--version" ] && echo "%{scl_name} %{version} Software Collection" || cat README
 EOF
 
 chmod a+x h2m_helper
@@ -125,6 +125,9 @@ install -m 644 %{scl_name}.7 %{buildroot}%{_mandir}/man7/%{scl_name}.7
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
+* Thu Apr 03 2014 Tomas Hrcka <thrcka@redhat.com> - 1.1-10
+- Fix white space typo in README generation 
+
 * Mon Mar 31 2014 Honza Horak <hhorak@redhat.com> - 1.1-9
 - Fix path typo in README
   Related: #1061462
